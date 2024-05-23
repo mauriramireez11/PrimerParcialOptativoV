@@ -1,81 +1,89 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Repository.Data;
-using Services.Logica;
-using System.Collections.Generic;
-using System.Data;
-using Npgsql;
-using Microsoft.AspNetCore.Authorization;
+using Repository.Models;
+using Repository.Repository;
+using Services;
 
 namespace PrimerParcial.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
-    public class ClienteController : Controller
+    public class ClienteController : ControllerBase
     {
-        private ClienteService clienteService;
-        private IConfiguration configuration;
+        private readonly ClienteRepository _clienteRepository;
+        private readonly ClienteService _clienteService;
 
-        public ClienteController(IConfiguration configuration)
+        public ClienteController(ClienteRepository clienteRepository, ClienteService clienteService)
         {
-            this.configuration = configuration;
-            this.clienteService = new ClienteService(configuration.GetConnectionString("postgresDB"));
+            _clienteRepository = clienteRepository;
+            _clienteService = clienteService;
         }
 
         [HttpPost("InsertarCliente")]
-        public ActionResult<string> insertar(ClienteModel modelo)
+        public IActionResult PostCliente([FromBody] ClienteModel cliente)
         {
-            var resultado = this.clienteService.insertarCliente(new Repository.Data.ClienteModel
-            {
-                Id_banco = modelo.Id_banco,
-                Nombre = modelo.Nombre,
-                Apellido = modelo.Apellido,
-                Documento = modelo.Documento,
-                Direccion = modelo.Direccion,
-                Mail = modelo.Mail,
-                Celular = modelo.Celular,
-                Estado = modelo.Estado
+            if (!_clienteService.ValidarCliente(cliente))
+                return BadRequest("Los datos del cliente no son validos, verifique nuevamente.");
 
-            });
-            return Ok(resultado);
+            _clienteRepository.insertarCliente(cliente);
+            return Ok("Cliente agregado correctamente.");
         }
 
-        [HttpDelete("eliminarCliente/{Id}")]
-        public ActionResult<string> eliminar(int Id)
+        [HttpDelete("eliminarCliente/{id}")]
+        public IActionResult EliminarCliente(int id)
         {
-            var resultado = this.clienteService.eliminarCliente(Id);
-            return Ok(resultado);
+            var clienteExiste = _clienteRepository.consultarCliente(id);
+            if (clienteExiste == null)
+                return NotFound("Cliente no encontrado");
+
+            _clienteRepository.eliminarCliente(id);
+            return Ok("Cliente eliminado correctamente.");
         }
 
-        [HttpPut("modificarCliente/{Id}")]
-        public ActionResult<string> modificar(ClienteModel modelo, int Id)
+        [HttpPut("modificarCliente")]
+        public IActionResult ActualizarCliente([FromBody] ClienteModel cliente)
         {
-            var resultado = this.clienteService.modificarCliente(new Repository.Data.ClienteModel
+            var clienteExistente = _clienteRepository.consultarCliente(cliente.Id);
+            if (clienteExistente == null)
+                return NotFound("Cliente no encontrado");
+
+            if (!_clienteService.ValidarCliente(cliente))
+                return BadRequest("Los datos ingresados no son válidos");
+
+            clienteExistente.Id_banco = cliente.Id_banco;
+            clienteExistente.Nombre = cliente.Nombre;
+            clienteExistente.Apellido = cliente.Apellido;
+            clienteExistente.Documento = cliente.Documento;
+            clienteExistente.Direccion = cliente.Direccion;
+            clienteExistente.Mail = cliente.Mail;
+            clienteExistente.Celular = cliente.Celular;
+            clienteExistente.Estado = cliente.Estado;
+
+            try
             {
-                Id_banco = modelo.Id_banco,
-                Nombre = modelo.Nombre,
-                Apellido = modelo.Apellido,
-                Documento = modelo.Documento,
-                Direccion = modelo.Direccion,
-                Mail = modelo.Mail,
-                Celular = modelo.Celular,
-                Estado = modelo.Estado
-            }, Id);
-            return Ok(resultado);
+                _clienteRepository.modificarCliente(clienteExistente, cliente.Id);
+                return Ok("Cliente modificado sin inconvenientes");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Ocurrió un error al modificar el cliente: {ex.Message}");
+            }
         }
 
         [HttpGet("ListarCliente")]
-        public ActionResult<List<ClienteModelLista>> listar()
+        public IActionResult ObtenerClientes()
         {
-            var resultado = clienteService.listarCliente();
-            return Ok(resultado);
+            var clientes = _clienteRepository.listarCliente();
+            return Ok(clientes);
         }
 
         [HttpGet("ConsultarCliente/{Id}")]
-        public ActionResult<ClienteModelLista> consultar(int Id)
+        public IActionResult ListarClientePorId(int Id)
         {
-            var resultado = this.clienteService.consultarCliente(Id);
-            return Ok(resultado);
+            var cliente = _clienteRepository.consultarCliente(Id);
+            if (cliente == null)
+                return NotFound("El cliente no existe.");
+
+            return Ok(cliente);
         }
     }
 }

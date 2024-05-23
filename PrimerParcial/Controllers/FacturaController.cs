@@ -1,82 +1,96 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Repository.Data;
-using Services.Logica;
 using System.Collections.Generic;
 using System.Data;
 using Npgsql;
 using Microsoft.AspNetCore.Authorization;
+using Services;
+using Repository.Models;
+using Repository.Repository;
 
 namespace PrimerParcial.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
-    public class FacturaController : Controller
+    public class FacturaController : ControllerBase
     {
-        private FacturaService facturaService;
-        private IConfiguration configuration;
+        private readonly FacturaRepository _facturaRepository;
+        private readonly FacturaService _facturaService;
 
-        public FacturaController(IConfiguration configuration)
+        public FacturaController(FacturaRepository facturaRepository, FacturaService facturaService)
         {
-            this.configuration = configuration;
-            this.facturaService = new FacturaService(configuration.GetConnectionString("postgresDB"));
+            _facturaRepository = facturaRepository;
+            _facturaService = facturaService;
         }
 
         [HttpPost("InsertarFactura")]
-        public ActionResult<string> insertar(FacturaModel modelo)
+        public IActionResult insercionFactura([FromBody] FacturaModel factura)
         {
-            var resultado = this.facturaService.InsertarFactura(new Repository.Data.FacturaModel
-            {
-                Id_cliente = modelo.Id_cliente,
-                Nro_factura = modelo.Nro_factura,
-                Fecha_hora = modelo.Fecha_hora,
-                Total = modelo.Total,
-                Total_iva5 = modelo.Total_iva5,
-                Total_iva10 = modelo.Total_iva10,
-                Total_iva = modelo.Total_iva,
-                Total_letras = modelo.Total_letras,
-                Sucursal = modelo.Sucursal
-            });
-            return Ok(resultado);
+            if (!_facturaService.ValidarFactura(factura))
+                return BadRequest("Datos erroneos de la factura, favor verifique nuevamente.");
+
+            _facturaRepository.InsertarFactura(factura);
+            return Ok("La factura se inserto correctamente.");
         }
 
         [HttpDelete("eliminarFactura/{Id}")]
-        public ActionResult<string> eliminar(int Id)
+        public IActionResult DeleteFactura(int Id)
         {
-            var resultado = this.facturaService.eliminarFactura(Id);
-            return Ok(resultado);
+            var factura = _facturaRepository.ConsultarFactura(Id);
+            if (factura == null)
+            {
+                return NotFound();
+            }
+
+            _facturaRepository.EliminarFactura(Id);
+            return Ok("Factura eliminada correctamente.");
         }
 
-        [HttpPut("modificarFactura/{Id}")]
-        public ActionResult<string> modificar(FacturaModel modelo, int Id)
+        [HttpPut("modificarFactura")]
+        public IActionResult ActualizarFactura([FromBody] FacturaModel factura)
         {
-            var resultado = this.facturaService.modificarFactura(new Repository.Data.FacturaModel
+            var facturaExistente = _facturaRepository.ConsultarFactura(factura.Id);
+            if (facturaExistente == null)
+                return NotFound("Factura no encontrada");
+
+            if (!_facturaService.ValidarFactura(factura))
+                return BadRequest("Los datos ingresados no son válidos");
+
+            facturaExistente.Id_cliente = factura.Id_cliente;
+            facturaExistente.Nro_factura = factura.Nro_factura;
+            facturaExistente.Fecha_hora = factura.Fecha_hora;
+            facturaExistente.Total = factura.Total;
+            facturaExistente.Total_iva5 = factura.Total_iva5;
+            facturaExistente.Total_iva10 = factura.Total_iva10;
+            facturaExistente.Total_iva = factura.Total_iva;
+            facturaExistente.Total_letras = factura.Total_letras;
+            facturaExistente.Sucursal = factura.Sucursal;
+
+            try
             {
-                Id_cliente = modelo.Id_cliente,
-                Nro_factura = modelo.Nro_factura,
-                Fecha_hora = modelo.Fecha_hora,
-                Total = modelo.Total,
-                Total_iva5 = modelo.Total_iva5,
-                Total_iva10 = modelo.Total_iva10,
-                Total_iva = modelo.Total_iva,
-                Total_letras = modelo.Total_letras,
-                Sucursal = modelo.Sucursal
-            }, Id);
-            return Ok(resultado);
+                _facturaRepository.ModificarFactura(facturaExistente);
+                return Ok("Factura modificada sin inconvenientes");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Ocurrió un error al modificar la factura: {ex.Message}");
+            }
         }
 
         [HttpGet("ListarFactura")]
-        public ActionResult<List<FacturaModelLista>> listar()
+        public IActionResult ObtenerFacturas()
         {
-            var resultado = facturaService.listarFactura();
-            return Ok(resultado);
+            var facturas = _facturaRepository.ListarFactura();
+            return Ok(facturas);
         }
 
         [HttpGet("ConsultarFactura/{Id}")]
-        public ActionResult<FacturaModelLista> consultar(int Id)
+        public IActionResult ObtenerFacturaPorId(int Id)
         {
-            var resultado = this.facturaService.consultarFactura(Id);
-            return Ok(resultado);
+            var factura = _facturaRepository.ConsultarFactura(Id);
+            if (factura == null)
+                return NotFound("La factura no existe.");
+            
+            return Ok(factura);
         }
     }
 }

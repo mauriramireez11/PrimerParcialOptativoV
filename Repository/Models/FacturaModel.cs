@@ -6,11 +6,10 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Repository.Data
+namespace Repository.Models
 {
     public class FacturaModel
     {
-        [JsonIgnore]
         public int Id { get; set; }
         public int Id_cliente { get; set; }
 
@@ -30,7 +29,6 @@ namespace Repository.Data
         [RegularExpression(@"^\d+(\.\d{2})?$")]
         public string Total_iva5 { get; set; }
 
-        [StringLength(6)]
         public string Total_letras { get; set; }
         public string Sucursal { get; set; }
 

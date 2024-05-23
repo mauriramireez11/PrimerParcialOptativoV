@@ -5,14 +5,12 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Repository.Data
+namespace Repository.Models
 {
     public class ClienteModel
     {
-
-        [JsonIgnore]
-        public int Id { get; set; }
         
+        public int Id { get; set; }
         public int Id_banco { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
