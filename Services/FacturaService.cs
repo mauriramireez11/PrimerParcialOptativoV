@@ -1,4 +1,5 @@
-﻿using Repository.Models;
+﻿using FluentValidation;
+using Repository.Models;
 using Repository.Repository;
 using System;
 using System.Collections.Generic;
@@ -11,47 +12,43 @@ namespace Services
 {
     public class FacturaService
     {
-
-        public bool ValidarFactura(FacturaModel factura)
+        public class ValidarFacturaFluent : AbstractValidator<FacturaModel>
         {
+            private readonly FacturaRepository _facturaRepository;
 
-            // Validar el formato de la factura
-            if (!Regex.IsMatch(factura.Nro_factura, @"^\d{3}-\d{3}-\d{6}$"))
+            public ValidarFacturaFluent(FacturaRepository facturaRepository)
             {
-                return false;
-            }
+                _facturaRepository = facturaRepository;
 
-            // Validar el campo Total
-            if (string.IsNullOrEmpty(factura.Total) || !Regex.IsMatch(factura.Total, @"^\d+(\.\d{2})?$"))
-            {
-                return false;
-            }
+                RuleFor(factura => factura.Nro_factura)
+                    .Matches(@"^\d{3}-\d{3}-\d{6}$")
+                    .WithMessage("El número de factura debe tener el formato 'XXX-XXX-XXXXXX'.");
 
-            // Validar el campo Total con IVA al 5%
-            if (string.IsNullOrEmpty(factura.Total_iva5) || !Regex.IsMatch(factura.Total_iva5, @"^\d+(\.\d{2})?$"))
-            {
-                return false;
-            }
+                RuleFor(factura => factura.Total)
+                    .GreaterThan(0)
+                    .WithMessage("El total de la factura debe ser mayor a 0.");
 
-            // Validar el campo Total con IVA al 10%
-            if (string.IsNullOrEmpty(factura.Total_iva10) || !Regex.IsMatch(factura.Total_iva10, @"^\d+(\.\d{2})?$"))
-            {
-                return false;
-            }
+                RuleFor(factura => factura.Total_iva5)
+                    .GreaterThan(0)
+                    .WithMessage("El total del IVA 5% debe ser mayor a 0.");
 
-            // Validar el campo Total con IVA
-            if (string.IsNullOrEmpty(factura.Total_iva) || !Regex.IsMatch(factura.Total_iva, @"^\d+(\.\d{2})?$"))
-            {
-                return false;
-            }
+                RuleFor(factura => factura.Total_iva10)
+                    .GreaterThan(0)
+                    .WithMessage("El total del IVA 10% debe ser mayor a 0.");
 
-            // Validar el campo Total en letras
-            if (string.IsNullOrEmpty(factura.Total_letras) || factura.Total_letras.Length < 6)
-            {
-                return false;
-            }
+                RuleFor(factura => factura.Total_iva)
+                    .GreaterThan(0)
+                    .WithMessage("El total del IVA debe ser mayor a 0.");
 
-            return true;
+                RuleFor(factura => factura.Total_letras)
+                    .NotEmpty()
+                    .MinimumLength(6)
+                    .WithMessage("El total en letras debe tener al menos 6 caracteres.");
+
+                RuleFor(factura => factura.Id_cliente)
+                    .NotEqual(0)
+                    .WithMessage("El ID del cliente no puede ser 0.");
+            }
         }
     }
 }

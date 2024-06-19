@@ -97,3 +97,6 @@ C:\Users\mauri\source\PrimerParcialOptativoV\PrimerParcial\obj\Debug\net6.0\refi
 C:\Users\mauri\source\PrimerParcialOptativoV\PrimerParcial\obj\Debug\net6.0\PrimerParcial.pdb
 C:\Users\mauri\source\PrimerParcialOptativoV\PrimerParcial\obj\Debug\net6.0\PrimerParcial.genruntimeconfig.cache
 C:\Users\mauri\source\PrimerParcialOptativoV\PrimerParcial\obj\Debug\net6.0\ref\PrimerParcial.dll
+C:\Users\mauri\source\PrimerParcialOptativoV\PrimerParcial\bin\Debug\net6.0\FluentValidation.dll
+C:\Users\mauri\source\PrimerParcialOptativoV\PrimerParcial\bin\Debug\net6.0\FluentValidation.AspNetCore.dll
+C:\Users\mauri\source\PrimerParcialOptativoV\PrimerParcial\bin\Debug\net6.0\FluentValidation.DependencyInjectionExtensions.dll

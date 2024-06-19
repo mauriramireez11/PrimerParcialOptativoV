@@ -1,9 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "Xn5Rer+O7aGupoOAOGrnnskRF0Bu02NViTmqVuFPsmZH0r8Rxj5roGTe4FharBalikFmIZW02VTbrb1WiFL1wA==",
+  "dgSpecHash": "KgJx0bcdhrMl0DzYqXhC70zGqJL9Bja93lO4r3OSfZxEYefLCXFl4o3cAQRyW0C4N2RWORhtAB7zkR5jtVG2Mw==",
   "success": true,
   "projectFilePath": "C:\\Users\\mauri\\source\\PrimerParcialOptativoV\\Repository\\Repository.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\mauri\\.nuget\\packages\\fluentvalidation\\11.5.1\\fluentvalidation.11.5.1.nupkg.sha512",
+    "C:\\Users\\mauri\\.nuget\\packages\\fluentvalidation.aspnetcore\\11.3.0\\fluentvalidation.aspnetcore.11.3.0.nupkg.sha512",
+    "C:\\Users\\mauri\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\11.5.1\\fluentvalidation.dependencyinjectionextensions.11.5.1.nupkg.sha512",
     "C:\\Users\\mauri\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\mauri\\.nuget\\packages\\microsoft.entityframeworkcore\\6.0.30\\microsoft.entityframeworkcore.6.0.30.nupkg.sha512",
     "C:\\Users\\mauri\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\6.0.30\\microsoft.entityframeworkcore.abstractions.6.0.30.nupkg.sha512",

@@ -18,25 +18,18 @@ namespace PrimerParcial.Controllers
             _clienteService = clienteService;
         }
 
+
         [HttpPost("InsertarCliente")]
         public IActionResult PostCliente([FromBody] ClienteModel cliente)
         {
-            if (!_clienteService.ValidarCliente(cliente))
-                return BadRequest("Los datos del cliente no son validos, verifique nuevamente.");
+            var validador = new Services.ClienteService.ValidarClienteFluent(_clienteRepository);
+            var resultado = validador.Validate(cliente);
+
+            if (!resultado.IsValid)
+                return BadRequest(string.Join(", ", resultado.Errors.Select(e => e.ErrorMessage)));
 
             _clienteRepository.insertarCliente(cliente);
             return Ok("Cliente agregado correctamente.");
-        }
-
-        [HttpDelete("eliminarCliente/{id}")]
-        public IActionResult EliminarCliente(int id)
-        {
-            var clienteExiste = _clienteRepository.consultarCliente(id);
-            if (clienteExiste == null)
-                return NotFound("Cliente no encontrado");
-
-            _clienteRepository.eliminarCliente(id);
-            return Ok("Cliente eliminado correctamente.");
         }
 
         [HttpPut("modificarCliente")]
@@ -46,8 +39,11 @@ namespace PrimerParcial.Controllers
             if (clienteExistente == null)
                 return NotFound("Cliente no encontrado");
 
-            if (!_clienteService.ValidarCliente(cliente))
-                return BadRequest("Los datos ingresados no son válidos");
+            var validador = new Services.ClienteService.ValidarClienteFluent(_clienteRepository);
+            var resultado = validador.Validate(cliente);
+
+            if (!resultado.IsValid)
+                return BadRequest(string.Join(", ", resultado.Errors.Select(e => e.ErrorMessage)));
 
             clienteExistente.Id_banco = cliente.Id_banco;
             clienteExistente.Nombre = cliente.Nombre;
@@ -68,11 +64,21 @@ namespace PrimerParcial.Controllers
                 return StatusCode(500, $"Ocurrió un error al modificar el cliente: {ex.Message}");
             }
         }
+        [HttpDelete("eliminarCliente/{id}")]
+        public IActionResult EliminarCliente(int id)
+        {
+            var clienteExiste = _clienteRepository.consultarCliente(id);
+            if (clienteExiste == null)
+                return NotFound("Cliente no encontrado");
+
+            _clienteRepository.eliminarCliente(id);
+            return Ok("Cliente eliminado correctamente.");
+        }
 
         [HttpGet("ListarCliente")]
-        public IActionResult ObtenerClientes()
+        public IActionResult ListarClientes()
         {
-            var clientes = _clienteRepository.listarCliente();
+            var clientes = _clienteRepository.ListarClientesActivos();
             return Ok(clientes);
         }
 

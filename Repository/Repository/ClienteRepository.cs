@@ -69,10 +69,15 @@ namespace Repository.Repository
             return _context.Clientes.FirstOrDefault(c => c.Id == Id);
         }
 
-
-        public IEnumerable<ClienteModel> listarCliente()
+        public ClienteModel consultarDocumento(string Documento)
         {
-            return _context.Clientes.ToList();
+            return _context.Clientes.FirstOrDefault(c => c.Documento == Documento);
+        }
+
+
+        public IEnumerable<ClienteModel> ListarClientesActivos()
+        {
+            return _context.Clientes.Where(c => c.Estado == "Activo").ToList();
         }
 
     }

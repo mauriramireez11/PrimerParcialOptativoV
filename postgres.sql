@@ -2,7 +2,7 @@
 -- PostgreSQL database cluster dump
 --
 
--- Started on 2024-05-22 22:59:01
+-- Started on 2024-06-18 00:14:09
 
 SET default_transaction_read_only = off;
 
@@ -44,7 +44,7 @@ ALTER ROLE postgres WITH SUPERUSER INHERIT CREATEROLE CREATEDB LOGIN REPLICATION
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-05-22 22:59:01
+-- Started on 2024-06-18 00:14:10
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -57,7 +57,7 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
--- Completed on 2024-05-22 22:59:01
+-- Completed on 2024-06-18 00:14:10
 
 --
 -- PostgreSQL database dump complete
@@ -74,7 +74,7 @@ SET row_security = off;
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-05-22 22:59:01
+-- Started on 2024-06-18 00:14:10
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -291,7 +291,7 @@ ALTER TABLE ONLY public."Facturas"
     ADD CONSTRAINT "FK_Facturas_Clientes_Id_cliente" FOREIGN KEY ("Id_cliente") REFERENCES public."Clientes"("Id") ON DELETE CASCADE;
 
 
--- Completed on 2024-05-22 22:59:01
+-- Completed on 2024-06-18 00:14:10
 
 --
 -- PostgreSQL database dump complete
@@ -308,7 +308,7 @@ ALTER TABLE ONLY public."Facturas"
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-05-22 22:59:01
+-- Started on 2024-06-18 00:14:10
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -525,7 +525,7 @@ ALTER TABLE ONLY public."Facturas"
     ADD CONSTRAINT "FK_Facturas_Clientes_Id_cliente" FOREIGN KEY ("Id_cliente") REFERENCES public."Clientes"("Id") ON DELETE CASCADE;
 
 
--- Completed on 2024-05-22 22:59:01
+-- Completed on 2024-06-18 00:14:10
 
 --
 -- PostgreSQL database dump complete
@@ -542,7 +542,7 @@ ALTER TABLE ONLY public."Facturas"
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-05-22 22:59:01
+-- Started on 2024-06-18 00:14:10
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -759,7 +759,7 @@ ALTER TABLE ONLY public."Facturas"
     ADD CONSTRAINT "FK_Facturas_Clientes_Id_cliente" FOREIGN KEY ("Id_cliente") REFERENCES public."Clientes"("Id") ON DELETE CASCADE;
 
 
--- Completed on 2024-05-22 22:59:01
+-- Completed on 2024-06-18 00:14:10
 
 --
 -- PostgreSQL database dump complete
@@ -776,7 +776,7 @@ ALTER TABLE ONLY public."Facturas"
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-05-22 22:59:01
+-- Started on 2024-06-18 00:14:10
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -993,7 +993,7 @@ ALTER TABLE ONLY public."Facturas"
     ADD CONSTRAINT "FK_Facturas_Clientes_Id_cliente" FOREIGN KEY ("Id_cliente") REFERENCES public."Clientes"("Id") ON DELETE CASCADE;
 
 
--- Completed on 2024-05-22 22:59:01
+-- Completed on 2024-06-18 00:14:11
 
 --
 -- PostgreSQL database dump complete
@@ -1010,7 +1010,7 @@ ALTER TABLE ONLY public."Facturas"
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-05-22 22:59:02
+-- Started on 2024-06-18 00:14:11
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1207,7 +1207,7 @@ ALTER TABLE ONLY public.factura
     ADD CONSTRAINT fk_id_cliente FOREIGN KEY (id_cliente) REFERENCES public.cliente(id);
 
 
--- Completed on 2024-05-22 22:59:02
+-- Completed on 2024-06-18 00:14:11
 
 --
 -- PostgreSQL database dump complete
@@ -1226,7 +1226,7 @@ ALTER TABLE ONLY public.factura
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-05-22 22:59:02
+-- Started on 2024-06-18 00:14:11
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1324,11 +1324,11 @@ CREATE TABLE public."Facturas" (
     "Id_cliente" integer NOT NULL,
     "Nro_factura" text NOT NULL,
     "Fecha_hora" text NOT NULL,
-    "Total" text NOT NULL,
-    "Total_iva" text NOT NULL,
-    "Total_iva10" text NOT NULL,
-    "Total_iva5" text NOT NULL,
-    "Total_letras" character varying(6) NOT NULL,
+    "Total" integer NOT NULL,
+    "Total_iva" integer NOT NULL,
+    "Total_iva10" integer NOT NULL,
+    "Total_iva5" integer NOT NULL,
+    "Total_letras" text NOT NULL,
     "Sucursal" text NOT NULL
 );
 
@@ -1370,7 +1370,10 @@ ALTER TABLE public."__EFMigrationsHistory" OWNER TO postgres;
 --
 
 COPY public."Clientes" ("Id", "Id_banco", "Nombre", "Apellido", "Documento", "Direccion", "Mail", "Celular", "Estado") FROM stdin;
-4	2	mauricio	mauricio	6587520	mauricio	mauricio	0991350366	mauricio
+8	0	string	string	string	string	string	string	string
+9	0	string	string	string	string	string	string	string
+10	0	string	string	6587520	string	string@gmail.com	0992233050	Activo
+6	0	string	string	6587528	string	string@gmail.com	0992233050	Activo
 \.
 
 
@@ -1381,6 +1384,10 @@ COPY public."Clientes" ("Id", "Id_banco", "Nombre", "Apellido", "Documento", "Di
 --
 
 COPY public."Facturas" ("Id", "Id_cliente", "Nro_factura", "Fecha_hora", "Total", "Total_iva", "Total_iva10", "Total_iva5", "Total_letras", "Sucursal") FROM stdin;
+6	0	292-429-120448	string	10	1	10	10	123456	string
+7	0	618-957-993493	string	10	10	10	10	string	string
+8	1	344-650-744370	string	10	10	10	10	string	string
+5	3	135-336-093564	string	10	10	10	10	string	string
 \.
 
 
@@ -1402,7 +1409,7 @@ COPY public."__EFMigrationsHistory" ("MigrationId", "ProductVersion") FROM stdin
 -- Name: Clientes_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Clientes_Id_seq"', 4, true);
+SELECT pg_catalog.setval('public."Clientes_Id_seq"', 10, true);
 
 
 --
@@ -1411,7 +1418,7 @@ SELECT pg_catalog.setval('public."Clientes_Id_seq"', 4, true);
 -- Name: Facturas_Id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Facturas_Id_seq"', 3, true);
+SELECT pg_catalog.setval('public."Facturas_Id_seq"', 8, true);
 
 
 --
@@ -1450,7 +1457,7 @@ ALTER TABLE ONLY public."__EFMigrationsHistory"
 REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 
 
--- Completed on 2024-05-22 22:59:02
+-- Completed on 2024-06-18 00:14:11
 
 --
 -- PostgreSQL database dump complete
@@ -1467,7 +1474,7 @@ REVOKE USAGE ON SCHEMA public FROM PUBLIC;
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-05-22 22:59:02
+-- Started on 2024-06-18 00:14:11
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1681,7 +1688,7 @@ ALTER TABLE ONLY public.factura
     ADD CONSTRAINT fk_id_cliente FOREIGN KEY (id_cliente) REFERENCES public.cliente(id);
 
 
--- Completed on 2024-05-22 22:59:02
+-- Completed on 2024-06-18 00:14:11
 
 --
 -- PostgreSQL database dump complete
@@ -1698,7 +1705,7 @@ ALTER TABLE ONLY public.factura
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2
 
--- Started on 2024-05-22 22:59:02
+-- Started on 2024-06-18 00:14:11
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1734,13 +1741,13 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
--- Completed on 2024-05-22 22:59:02
+-- Completed on 2024-06-18 00:14:11
 
 --
 -- PostgreSQL database dump complete
 --
 
--- Completed on 2024-05-22 22:59:02
+-- Completed on 2024-06-18 00:14:11
 
 --
 -- PostgreSQL database cluster dump complete

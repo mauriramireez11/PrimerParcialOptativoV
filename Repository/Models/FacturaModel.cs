@@ -12,23 +12,13 @@ namespace Repository.Models
     {
         public int Id { get; set; }
         public int Id_cliente { get; set; }
-
         [RegularExpression(@"^\d{3}-\d{3}-\d{6}$")]
         public string Nro_factura { get; set; }
         public string Fecha_hora { get; set; }
-
-        [RegularExpression(@"^\d+(\.\d{2})?$")]
-        public string Total { get; set; }
-
-        [RegularExpression(@"^\d+(\.\d{2})?$")]
-        public string Total_iva { get; set; }
-
-        [RegularExpression(@"^\d+(\.\d{2})?$")]
-        public string Total_iva10 { get; set; }
-
-        [RegularExpression(@"^\d+(\.\d{2})?$")]
-        public string Total_iva5 { get; set; }
-
+        public int Total { get; set; }
+        public int Total_iva { get; set; }
+        public int Total_iva10 { get; set; }
+        public int Total_iva5 { get; set; }
         public string Total_letras { get; set; }
         public string Sucursal { get; set; }
 

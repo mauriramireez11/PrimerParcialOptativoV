@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Services;
 using Repository.Models;
 using Repository.Repository;
+using static Services.FacturaService;
 
 namespace PrimerParcial.Controllers
 {
@@ -25,24 +26,14 @@ namespace PrimerParcial.Controllers
         [HttpPost("InsertarFactura")]
         public IActionResult insercionFactura([FromBody] FacturaModel factura)
         {
-            if (!_facturaService.ValidarFactura(factura))
-                return BadRequest("Datos erroneos de la factura, favor verifique nuevamente.");
+            var validador = new ValidarFacturaFluent(_facturaRepository);
+            var resultado = validador.Validate(factura);
+
+            if (!resultado.IsValid)
+                return BadRequest(string.Join(", ", resultado.Errors.Select(e => e.ErrorMessage)));
 
             _facturaRepository.InsertarFactura(factura);
             return Ok("La factura se inserto correctamente.");
-        }
-
-        [HttpDelete("eliminarFactura/{Id}")]
-        public IActionResult DeleteFactura(int Id)
-        {
-            var factura = _facturaRepository.ConsultarFactura(Id);
-            if (factura == null)
-            {
-                return NotFound();
-            }
-
-            _facturaRepository.EliminarFactura(Id);
-            return Ok("Factura eliminada correctamente.");
         }
 
         [HttpPut("modificarFactura")]
@@ -52,8 +43,11 @@ namespace PrimerParcial.Controllers
             if (facturaExistente == null)
                 return NotFound("Factura no encontrada");
 
-            if (!_facturaService.ValidarFactura(factura))
-                return BadRequest("Los datos ingresados no son válidos");
+            var validador = new ValidarFacturaFluent(_facturaRepository);
+            var resultado = validador.Validate(factura);
+
+            if (!resultado.IsValid)
+                return BadRequest(string.Join(", ", resultado.Errors.Select(e => e.ErrorMessage)));
 
             facturaExistente.Id_cliente = factura.Id_cliente;
             facturaExistente.Nro_factura = factura.Nro_factura;
@@ -74,6 +68,19 @@ namespace PrimerParcial.Controllers
             {
                 return StatusCode(500, $"Ocurrió un error al modificar la factura: {ex.Message}");
             }
+        }
+
+        [HttpDelete("eliminarFactura/{Id}")]
+        public IActionResult DeleteFactura(int Id)
+        {
+            var factura = _facturaRepository.ConsultarFactura(Id);
+            if (factura == null)
+            {
+                return NotFound();
+            }
+
+            _facturaRepository.EliminarFactura(Id);
+            return Ok("Factura eliminada correctamente.");
         }
 
         [HttpGet("ListarFactura")]

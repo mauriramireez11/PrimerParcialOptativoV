@@ -38,11 +38,11 @@ namespace Repository.Migrations
                     Id_cliente = table.Column<int>(type: "integer", nullable: false),
                     Nro_factura = table.Column<string>(type: "text", nullable: false),
                     Fecha_hora = table.Column<string>(type: "text", nullable: false),
-                    Total = table.Column<string>(type: "text", nullable: false),
-                    Total_iva = table.Column<string>(type: "text", nullable: false),
-                    Total_iva10 = table.Column<string>(type: "text", nullable: false),
-                    Total_iva5 = table.Column<string>(type: "text", nullable: false),
-                    Total_letras = table.Column<string>(type: "character varying(6)", maxLength: 6, nullable: false),
+                    Total = table.Column<int>(type: "integer", nullable: false),
+                    Total_iva = table.Column<int>(type: "integer", nullable: false),
+                    Total_iva10 = table.Column<int>(type: "integer", nullable: false),
+                    Total_iva5 = table.Column<int>(type: "integer", nullable: false),
+                    Total_letras = table.Column<string>(type: "text", nullable: false),
                     Sucursal = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>

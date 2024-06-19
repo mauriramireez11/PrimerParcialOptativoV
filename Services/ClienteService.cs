@@ -1,59 +1,58 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Repository.Models;
 using Repository.Repository;
+using static Services.ClienteService.ValidarClienteFluent;
+
+
 
 namespace Services
 {
     public class ClienteService
     {
-        private readonly ClienteRepository _clienteRepository;
-
-        public bool ValidarCliente(ClienteModel cliente)
+        public class ValidarClienteFluent : AbstractValidator<ClienteModel>
         {
+            private readonly ClienteRepository _clienteRepository;
 
-
-            if (string.IsNullOrEmpty(cliente.Nombre) || cliente.Nombre.Length < 3)
+            public ValidarClienteFluent(ClienteRepository repositorio)
             {
+                _clienteRepository = repositorio;
 
-                return false;
+                RuleFor(cliente => cliente.Nombre)
+                    .NotEmpty()
+                    .MinimumLength(3)
+                    .WithMessage("El nombre debe tener al menos 3 caracteres.");
+
+                RuleFor(cliente => cliente.Apellido)
+                    .NotEmpty()
+                    .MinimumLength(3)
+                    .WithMessage("El apellido debe tener al menos 3 caracteres.");
+
+                RuleFor(cliente => cliente.Celular)
+                    .Matches(@"^\d{10}$")
+                    .WithMessage("El número de celular debe tener 10 dígitos numéricos.");
+
+                RuleFor(cliente => cliente.Mail)
+                    .NotEmpty()
+                    .EmailAddress()
+                    .WithMessage("El correo electrónico no es válido.");
+
+                RuleFor(cliente => cliente.Documento)
+                        .NotEmpty()
+                        .MinimumLength(7)
+                        .Must(IsUniqueDocument)
+                        .WithMessage("El documento debe tener al menos 7 caracteres y ser único.");
+
             }
-
-            if (string.IsNullOrEmpty(cliente.Apellido) || cliente.Apellido.Length < 3)
+            private bool IsUniqueDocument(string documento)
             {
-
-                return false;
+                var entidad = _clienteRepository.consultarDocumento(documento);
+                return entidad == null;
             }
-
-            if (string.IsNullOrEmpty(cliente.Documento) || cliente.Documento.Length < 3)
-            {
-
-                return false;
-            }
-
-            if (!string.IsNullOrEmpty(cliente.Celular))
-            {
-                if (!EsNumero(cliente.Celular))
-                {
-
-                    return false;
-                }
-
-                if (cliente.Celular.Length != 10)
-                {
-
-                    return false;
-                }
-            }
-
-            // Si todas las validaciones pasan, el cliente es válido
-            return true;
+            
         }
+
+        
 
         private bool EsNumero(string valor)
         {
@@ -61,3 +60,7 @@ namespace Services
         }
     }
 }
+
+
+
+
